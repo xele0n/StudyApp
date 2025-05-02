@@ -1,0 +1,127 @@
+# Study App Architecture Documentation
+
+## Overview
+The Study App is built using Swift and SwiftUI following the MVVM (Model-View-ViewModel) design pattern. The architecture consists of:
+- Models: Data structures
+- Views: UI components
+- Managers: Logic controllers that serve as ViewModels
+
+## Architecture Components
+
+### Models
+Models are simple data structures that represent the core concepts of the application:
+
+1. **StudySession.swift**: Represents a single study session with properties like subject, start/end time, and duration.
+   - Also defines `TimerMode` enum for tracking timer states and `StudySubject` enum for categorizing subjects.
+
+2. **Note.swift**: Represents study notes with title, content, subject, and timestamps.
+
+3. **RoadmapItem.swift**: Contains `Roadmap` and `RoadmapStep` structures for tracking progress toward academic goals.
+   - Includes `StepStatus` enum for tracking progress states.
+
+4. **CalendarEvent.swift**: Represents calendar events with title, dates, subject, and recurrence patterns.
+
+### Managers
+Managers serve as the application's business logic layer, similar to ViewModels in MVVM. They:
+- Maintain the state for their respective features
+- Are observable objects that publish changes to views
+- Handle data persistence
+- Provide functionality to manipulate the models
+
+1. **StudyManager.swift**: Manages study sessions and timers
+   - Tracks active study sessions
+   - Provides timer functionality (start, pause, stop)
+   - Implements the Pomodoro technique 
+   - Maintains history of study sessions
+   - Provides analytics on study time
+
+2. **AppBlockerManager.swift**: Manages blocking of distracting apps
+   - Maintains list of apps to block
+   - Handles blocking duration and state
+   - In a production app, would interface with ScreenTime API
+
+3. **CalendarManager.swift**: Manages the study calendar
+   - Stores and retrieves calendar events
+   - Provides filtering by day/week/month 
+   - Interfaces with device calendar via EventKit
+
+4. **NotesManager.swift**: Manages study notes
+   - CRUD operations for notes
+   - Searching/filtering notes
+   - Import/export functionality
+
+5. **RoadmapManager.swift**: Manages study roadmaps
+   - Creates and modifies roadmaps
+   - Tracks progress on roadmap steps
+   - Interfaces with OpenAI API for AI-generated roadmaps
+
+### Views
+Views are SwiftUI components that display the UI:
+
+1. **ContentView.swift**: Main tab view that serves as the container for all feature views
+
+2. **RevisionView.swift**: Study session and app blocking interface
+   - Timer controls
+   - Subject selection
+   - Pomodoro implementation
+   - App blocking controls
+
+3. **CalendarView.swift**: Calendar interface
+   - Displays events by day
+   - Add/edit calendar events
+   - Calendar visualization
+
+4. **NotesView.swift**: Notes management interface
+   - Notes listing with filtering
+   - Note editing
+   - Search functionality
+
+5. **RoadmapView.swift**: Roadmap creation and tracking
+   - Displays roadmaps and progress
+   - AI-generated roadmap interface
+   - Step status management
+
+6. **SettingsView.swift**: App configuration
+   - Pomodoro timer settings
+   - App blocker customization
+   - General app settings
+
+## Data Flow
+1. Models define the data structures
+2. Managers maintain collections of models and business logic
+3. Views observe managers using SwiftUI's @EnvironmentObject
+4. User interactions in views call manager methods
+5. Managers update their published properties
+6. Views automatically update when published properties change
+
+## Persistence
+- All managers use UserDefaults for simple persistence
+- Models conform to the Codable protocol for serialization
+- Each manager has its own saveKey for independent storage
+
+## App Blocking Implementation
+In the current implementation, app blocking is simulative. In a production app, app blocking would be implemented using:
+
+1. **Screen Time API (ScreenTime.framework)**:
+   - Available in iOS 14+
+   - Requires special entitlement from Apple (Family Controls framework)
+   - Allows setting and enforcing app limits
+   - Documentation: https://developer.apple.com/documentation/screentime
+
+2. **Managed App Configuration**:
+   - For enterprise/education deployments
+   - Uses Mobile Device Management (MDM)
+   - Can restrict access to specific apps
+
+3. **Focus Mode Integration**:
+   - Integrates with iOS Focus modes
+   - Can suggest Focus filters
+   - Limited control compared to Screen Time API
+
+The full implementation would require Apple's approval and special entitlements for the Screen Time API.
+
+## AI Integration
+The RoadmapManager includes integration with OpenAI's API for generating study roadmaps:
+- Creates personalized study plans based on goals
+- Structures steps with realistic timelines
+- In the current implementation, it simulates responses for demonstration 

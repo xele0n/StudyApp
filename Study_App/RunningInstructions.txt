@@ -1,0 +1,78 @@
+# How to Run the Study App
+
+## Prerequisites
+- Mac computer with macOS Monterey or later
+- Xcode 13 or later (Xcode 14+ recommended)
+- An Apple Developer account (for testing on a physical device)
+- iOS 15.0+ device or simulator (iOS 16+ recommended for full FamilyControls functionality)
+
+## Setting Up the Project
+
+1. **Open the project in Xcode**
+   - Launch Xcode
+   - Select "Open a project or file"
+   - Navigate to the StudyApp folder and open it
+   - If prompted, select "Trust and Open"
+
+2. **Configure Signing & Capabilities**
+   - Select the StudyApp project in the Navigator
+   - Select the "StudyApp" target
+   - Go to the "Signing & Capabilities" tab
+   - Sign in with your Apple Developer account
+   - Choose a Team
+   - Add the "Family Controls" capability if not already present
+
+3. **Request the Family Controls Entitlement**
+   - The Family Controls framework requires special entitlement from Apple
+   - For full functionality, you need to request this entitlement:
+     - Visit https://developer.apple.com/contact/request/family-controls-entitlement/
+     - Fill out the form explaining your app's usage of Screen Time API
+     - Wait for Apple's approval (may take several days)
+   - For now, the app will build but the app blocking features may not fully function
+
+## Running the App
+
+### On a Simulator
+1. Select an iOS simulator from the device menu in Xcode (next to the Run/Stop buttons)
+2. Click the Run button (▶️) or press Cmd+R
+3. The app will build and launch in the simulator
+4. Note: Some Screen Time API features may not fully function in a simulator
+
+### On a Physical Device
+1. Connect your iOS device to your Mac with a USB cable
+2. Select your device from the device menu in Xcode
+3. Click the Run button (▶️) or press Cmd+R
+4. You may need to trust your development certificate on your device
+5. The app will install and launch on your device
+
+## Troubleshooting
+
+### Build Errors
+- **Family Controls Framework Not Found**: Make sure you're targeting iOS 15.0 or later
+- **Signing Issues**: Verify your Apple Developer account and team are properly set up
+- **Entitlement Issues**: You can still build and run without the Family Controls entitlement, but app blocking will be limited
+
+### Runtime Issues
+- **Authorization Failed**: The user must grant permission for your app to use Screen Time API
+- **App Selection Not Working**: Ensure you're testing on a real device with iOS 15+
+- **Missing Entitlement**: The full functionality requires Apple's approval for the entitlement
+
+## Testing App Blocking
+
+1. Launch the app
+2. Go to the "Revision" tab
+3. Tap "Select Apps to Block" button
+4. Choose apps to block in the system UI that appears
+5. Toggle "Block Distracting Apps" to ON
+6. Choose a duration (1, 2, or 3 hours)
+7. The selected apps will now be blocked (if proper entitlement is granted)
+
+## Note on Screen Time API Limitations
+
+Until you receive the official Family Controls entitlement from Apple, you may experience the following limitations:
+
+- The app selection UI may appear but selections might not be saved
+- App blocking may not be enforced by the system
+- You might see authorization errors in the console
+
+The app has been designed to degrade gracefully if the entitlements aren't available, so you can still test all other functionality. 
